@@ -1,0 +1,113 @@
+---
+title: "prodigy task 2"
+author: "Jessica Michael"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+options(repos = "https://cloud.r-project.org")
+install.packages("skimr")
+install.packages("GGally")
+```
+
+
+```{r}
+library(tidyverse)  # For data manipulation and visualization
+library(skimr)      # For quick summary of the data set
+library(GGally)     # For advanced visualizations
+library(readr)
+```
+
+
+
+```{r}
+# Load the data from the CSV file
+titanic <- read.csv("c:/Users/jessica/Desktop/New folder/train.csv")  
+
+
+
+# View the first few rows of the data set
+head(titanic)
+
+
+
+```
+
+
+```{r}
+str(titanic)
+
+# Check for missing values
+colSums(is.na(titanic))
+
+
+```
+```{r}
+# Fill missing Age values with the median
+titanic$Age[is.na(titanic$Age)] <- median(titanic$Age, na.rm = TRUE)
+
+# Replace missing Cabin values with 'Unknown'
+titanic$Cabin[is.na(titanic$Cabin)] <- "Unknown"
+
+# Fill missing Embarked values with the mode
+titanic$Embarked[is.na(titanic$Embarked)] <- names(sort(table(titanic$Embarked), decreasing = TRUE))[1]
+head(titanic)
+```
+
+```{r}
+# Get a summary of the dataset
+skim(titanic)
+
+```
+
+```{r}
+# Plot survival rate by gender
+ggplot(titanic, aes(x = Sex, fill = factor(Survived))) + 
+    geom_bar(position = "dodge") + 
+    labs(title = "Survival Rate by Gender", x = "Sex", y = "Count") + 
+    scale_fill_discrete(name = "Survived", labels = c("No", "Yes"))
+
+```
+
+
+```{r}
+# Plot survival rate by passenger class
+ggplot(titanic, aes(x = Pclass, fill = factor(Survived))) + 
+    geom_bar(position = "dodge") + 
+    labs(title = "Survival Rate by Passenger Class", x = "Pclass", y = "Count") + 
+    scale_fill_discrete(name = "Survived", labels = c("No", "Yes"))
+
+```
+```{r}
+# Plot age distribution by survival
+ggplot(titanic, aes(x = Age, fill = factor(Survived))) + 
+    geom_histogram(bins = 30, alpha = 0.7) + 
+    labs(title = "Survival by Age Distribution", x = "Age", y = "Count") + 
+    scale_fill_discrete(name = "Survived", labels = c("No", "Yes"))
+
+```
+```{r}
+# Correlation plot for numeric variables
+titanic_numeric <- titanic %>% 
+  select(Age, SibSp, Parch, Fare, Survived)
+
+ggpairs(titanic_numeric)
+
+```
+```{r}
+# Plot survival rate by embarkation port
+ggplot(titanic, aes(x = Embarked, fill = factor(Survived))) + 
+    geom_bar(position = "dodge") + 
+    labs(title = "Survival Rate by Embarkation Port", x = "Embarked", y = "Count") + 
+    scale_fill_discrete(name = "Survived", labels = c("No", "Yes"))
+
+
+```
+
+
